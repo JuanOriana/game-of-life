@@ -11,7 +11,6 @@ class Grid:
         self.rows = rows
         self.cols = cols
         self.state = np.zeros((self.rows, self.cols), dtype=bool)
-        self.initGrid()
     
     def clear_state(self):
         self.state = np.zeros((self.rows, self.cols), dtype=bool)
@@ -23,7 +22,7 @@ class Grid:
         if self.in_bounds(i,j):
             return self.state[i][j]
 
-    def get_cell(self,i,j,value):
+    def set_cell(self,i,j,value):
         if self.in_bounds(i,j):
             self.state[i][j] = value
 
@@ -39,6 +38,7 @@ class Grid:
         count = 0
         for n_i in range(i-1,i+2):
             for n_j in range(j-1,j+2):
+                if (n_i == i and n_j == j): continue;
                 if self.in_bounds(n_i,n_j) and self.state[n_i][n_j] == ALIVE: 
                     count+=1
         return count
@@ -47,8 +47,11 @@ class Grid:
         new_state = np.copy(self.state)
         for i in range(self.rows):
             for j in range(self.cols):
-                if self.surrounding_alive_count(i,j) == 3:
-                    new_state[i][j] == ALIVE
+                alive_count = self.surrounding_alive_count(i,j)
+                curr_state = self.state[i][j]
+                # live condition
+                if (alive_count == 3) or (alive_count == 2 and curr_state == ALIVE):
+                    new_state[i][j] = ALIVE
                 else:
-                    new_state[i][j] == DEAD
+                    new_state[i][j] = DEAD
         self.state = new_state
