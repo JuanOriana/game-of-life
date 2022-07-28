@@ -9,7 +9,7 @@ import random
 from src import grid as gr, button as btn, slider as sdr
 
 pygame.init()
-pygame.display.set_caption("Pathfinding Algorithm Visualization")
+pygame.display.set_caption("Conway's Game of Life")
 size = width, height = 1000, 700
 grid_size = grid_width, grid_height = 900, 550
 x_offset = (width - grid_width) // 2
