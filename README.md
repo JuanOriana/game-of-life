@@ -1,5 +1,5 @@
 # Conway's Game of Life
-A simple implementation of the Game of Life in Python using Pygame for the graphical interface.
+A simple implementation of [Life](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life) in Python using Pygame for the graphical interface.
 
 Allows for the following functionality:
 - Designing custom start states
