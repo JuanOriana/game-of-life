@@ -4,7 +4,7 @@ import sys
 import math
 import random
 
-from src import grid as gr, button as btn
+from src import grid as gr, button as btn, slider as sdr
 
 pygame.init()
 pygame.display.set_caption("Pathfinding Algorithm Visualization")
@@ -75,6 +75,9 @@ button_erase = btn.Button(370, 750, button_width, button_height, GREY, smallFont
 buttons = [button_calculate,button_clear,button_random,button_block,button_erase]
 draw_buttons()
 
+slider = sdr.Slider(100,100,150,5)
+slider.draw(screen)
+
 
 
 def draw_grid(grid):
@@ -115,7 +118,8 @@ running = False
 frame = 0
 
 while True:
-    frame = (frame+1)%30
+    rate = (100-slider.get_volume()+30)//5
+    frame = (frame+1)%(rate)
     if (frame == 0 and running):
         grid.evolve()
     for event in pygame.event.get():
@@ -126,15 +130,18 @@ while True:
             if button_clear.collides(mouse):
                 grid.clear_state()
             if button_random.collides(mouse):
-                grid.randomize(0.3)
+                grid.randomize(0.1)
             if button_calculate.collides(mouse):
                 running = not running
+
 
 
     # Not using event.get() allows for dragging
     click, _, _ = pygame.mouse.get_pressed()
     if click == 1:
         mouse = pygame.mouse.get_pos()
+        if slider.on_slider(mouse[0],mouse[1]):
+            slider.handle_event(screen,mouse[0])
         if x_offset <= mouse[0] <= width - x_offset and 125 <= mouse[1] <= 125 + grid_height:
             cell_x = (mouse[0] - x_offset) // CELL_SIZE
             cell_y = (mouse[1] - 125) // CELL_SIZE
