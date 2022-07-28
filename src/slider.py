@@ -48,6 +48,6 @@ class Slider:
             self.circle_x = self.sliderRect.x + self.sliderRect.w
         else:
             self.circle_x = x
-        pg.draw.rect(screen, (0,0,0), pg.Rect(self.x - self.w,self.y - self.h,self.w*3,self.h*3))
+        pg.draw.rect(screen, (0,0,0), pg.Rect(self.x - 10 ,self.y - self.h,self.w + 20,self.h*3))
         self.draw(screen)
         self.update_volume(x)
