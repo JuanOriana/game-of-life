@@ -1,4 +1,5 @@
 from cProfile import run
+from pickle import STOP
 import pygame
 import sys
 import math
@@ -65,7 +66,10 @@ def draw_buttons():
 
 
 button_size = button_width, button_height = 80, 30
-button_calculate = btn.Button(820, 70, button_width, button_height, GREEN, smallFont.render('Calculate!', True, BLACK))
+button_run = btn.Button(820, 70, button_width, button_height, GREEN, smallFont.render('Run!', True, BLACK))
+button_stop = btn.Button(820, 70, button_width, button_height, RED, smallFont.render('Stop!', True, BLACK))
+
+button_calculate = button_run
 button_clear = btn.Button(820, 750, button_width, button_height, WHITE, smallFont.render("Clear", True, BLACK))
 button_random = btn.Button(730, 750, button_width, button_height, BLUE, smallFont.render("Random!", True, WHITE))
 
@@ -78,7 +82,20 @@ draw_buttons()
 slider = sdr.Slider(100,100,150,5)
 slider.draw(screen)
 
+pygame.draw.rect(screen, BLACK, (0, 0, 600, 60))
+stateLabel = smallFont.render("Current state :", True, WHITE)
+screen.blit(stateLabel, (650, 75))
+stoppedLabel = smallFont.render("stopped", True, RED)
+startedLabel = smallFont.render("started", True, GREEN)
+screen.blit(stoppedLabel, (750, 75))
 
+def correct_label(running):
+    if running: return startedLabel
+    return stoppedLabel
+
+def correct_button(running):
+    if running: return button_stop
+    return button_run
 
 def draw_grid(grid):
     for i in range(X_CELL):
@@ -89,33 +106,8 @@ def draw_grid(grid):
             pygame.draw.rect(screen, cell_color, (x_offset + i * CELL_SIZE, 125 + j * CELL_SIZE, CELL_SIZE, CELL_SIZE))
             pygame.draw.rect(screen, WHITE, (x_offset + i * CELL_SIZE, 125 + j * CELL_SIZE, CELL_SIZE, CELL_SIZE),
                              width=1)
-
-    # # Analyzer flags
-    # if analyzer.flag != algo.INACTIVE:
-    #     # Erase old labels
-    #     pygame.draw.rect(screen, BLACK, (0, 0, 600, 60))
-    #     stateLabel = smallFont.render("Current state :", True, WHITE)
-    #     screen.blit(stateLabel, (100, 20))
-    #     if analyzer.flag == algo.ANALYZING:
-    #         flagColor = ORANGE
-    #         flagLabel = "Analyzing"
-    #     elif analyzer.flag == algo.SUCCESS:
-    #         countLabel = "Found path length: " + str(analyzer.pathLength)
-    #         stateLabel = smallFont.render(countLabel, True, GREEN)
-    #         screen.blit(stateLabel, (350, 30))
-    #         flagColor = GREEN
-    #         flagLabel = "Success!"
-    #     else:
-    #         flagColor = RED
-    #         flagLabel = "Failed to find path"
-    #     stateLabel = smallFont.render(flagLabel, True, flagColor)
-    #     screen.blit(stateLabel, (200, 20))
-
-    #     countLabel = "Visited nodes: " + str(analyzer.visitCount)
-    #     stateLabel = smallFont.render(countLabel, True, WHITE)
-    #     screen.blit(stateLabel, (100, 40))
-running = False
 frame = 0
+running = False
 
 while True:
     rate = (100-slider.get_volume()+30)//5
@@ -133,6 +125,11 @@ while True:
                 grid.randomize(0.1)
             if button_calculate.collides(mouse):
                 running = not running
+                pygame.draw.rect(screen, BLACK, (750, 75, 70, 50))
+                screen.blit(correct_label(running), (750, 75))
+                button_calculate = correct_button(running)
+                button_calculate.draw(screen)
+
 
 
 
